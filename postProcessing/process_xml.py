@@ -3,7 +3,6 @@ Author: Tiffany Chen
 Parse tag files, and plot tagged polygons on images
 Usage: process_xml.py collection 
 '''
-
 from BeautifulSoup import BeautifulSoup
 import numpy as np
 import cv2
@@ -24,19 +23,20 @@ if __name__ == "__main__":
 	for t in  os.listdir(os.path.join(anno_folder, collection)):
 		tag_path = os.path.join(anno_folder, collection, t)
 		im_path = os.path.join(img_folder, collection, (t.split('.')[0] + '.jpg'))
-		print tag_path, im_path
 
 		xml = BeautifulSoup(open(tag_path).read())
-		im = cv2.imread(im_path)	
+		#im = cv2.imread(im_path)	
 
 		for obj in  xml.annotation.findAll('object'): # for each object labeled
-						
+			names = [name.contents[0] for name in obj.findAll('name')]
+			assert(len(names) == 1)
+			obj_name =  names[0]
+			
 			poly_pts = [[int(pt.x.contents[0]), int(pt.y.contents[0])]  for pt in obj.polygon.findAll('pt')] # for each point in the polygon
 			pts = np.array(poly_pts, np.int32)
 			pts = pts.reshape((-1, 1, 2))
 			cv2.polylines(im, [pts], True, (randint(0,255),randint(0,255),randint(0,255)), thickness=3)
 			
-	#print y.annotation.polygon.findAll('pt')
 
 		cv2.imshow('', im)
 		cv2.waitKey(-1)
