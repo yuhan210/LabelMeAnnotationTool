@@ -127,7 +127,7 @@ function RenderObjectList() {
   html_str += '</ol><p><br/></p></div>';
   
   // Attach annotation list to 'anno_anchor' DIV element:
-  $('#anno_anchor').append(html_str);
+//  $('#anno_anchor').append(html_str);
 }
 
 

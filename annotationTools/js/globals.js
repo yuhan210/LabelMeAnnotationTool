@@ -13,8 +13,8 @@ var username = 'anonymous';
 var username_flag = 0;
 
 // Boolean indicating if we will use attributes. This should be read from the URL and set to 0 by default.
-var use_attributes = 1; // if this is 0, then it will remove all the attributes from the bubble.
-var use_parts = 1; // if this is 0 disapears the message from the bubble
+var use_attributes = 0; // if this is 0, then it will remove all the attributes from the bubble.
+var use_parts = 0; // if this is 0 disapears the message from the bubble
 
 // for now, let's remove the attributes in MT mode. Just in case anybody is trying this.
 if (getQueryVariable('mode')=='mt'){

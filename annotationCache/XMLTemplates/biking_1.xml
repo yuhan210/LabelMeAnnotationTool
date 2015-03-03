@@ -1,0 +1,16 @@
+<annotation>
+<filename>
+myfile
+</filename>
+<folder>
+mydir
+</folder>
+<source>
+<sourceImage>
+Biking_1
+</sourceImage>
+<sourceAnnotation>
+LabelMe Webtool
+</sourceAnnotation>
+</source>
+</annotation>

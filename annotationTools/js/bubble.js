@@ -148,7 +148,7 @@ function GetPopupFormEdit(anno) {
   var parts = anno.GetParts();
   
   html_str = "<b>Enter object name</b><br />";
-  html_str += HTMLobjectBox(obj_name);
+	html_str += HTMLobjectBox(obj_name);
   
   if(use_attributes) {
     html_str += HTMLoccludedBox(occluded);
@@ -191,6 +191,11 @@ function GetPopupFormEdit(anno) {
 // Simple building blocks:
 // ****************************
 
+function HTMLobjectDropDown(obj_name){
+	var html_str = "";
+	html_str += '<select name="objEnter" id="objEnter"> <option value="stop sign">Stop Sign</option> </select>';
+	return html_str;
+}
 // Shows the box to enter the object name
 function HTMLobjectBox(obj_name) {
   var html_str="";

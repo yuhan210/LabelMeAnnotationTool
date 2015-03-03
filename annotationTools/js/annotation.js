@@ -222,10 +222,11 @@ function annotation(anno_id) {
       var isAngle = 0;
       for(var i = 0; i < strtok.length; i++) if(strtok[i]=='angle') isAngle = 1;
       
-      if(this.GetPtsX().length==1) {
+     /** if(this.GetPtsX().length==1) {
 	this.polygon_id = DrawFlag(this.div_attach,this.GetPtsX()[0],this.GetPtsY()[0],obj_name,im_ratio);
-      }
-      else if((this.GetPtsX().length==3) && isAngle) {
+      }**/
+
+      if((this.GetPtsX().length==3) && isAngle) {
 	var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="4"';
 	this.polygon_id = DrawPolyLine(this.div_attach,this.GetPtsX(),this.GetPtsY(),obj_name,attr,im_ratio);
       }

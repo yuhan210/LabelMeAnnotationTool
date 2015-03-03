@@ -6,8 +6,8 @@ if (!$username){
    $username = $_COOKIE["username"];
 }
 
-$TOOLHOME = "/var/www/developers/xavierpuigf/LabelMeAnnotationTool/";
-$URLHOME = "http://labelme2.csail.mit.edu/developers/xavierpuigf/LabelMeAnnotationTool/";
+$TOOLHOME = "/var/www/LabelMeAnnotationTool/";
+$URLHOME = "http://elmo/LabelMeAnnotationTool/";
 
 if (!$public==true) {
    $HOMEIMAGES = $TOOLHOME."Images/users/$username/";

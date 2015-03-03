@@ -6,7 +6,12 @@ function StartupLabelMe() {
 
   // Check browser:
   GetBrowserInfo();
-  if(IsNetscape() || (IsMicrosoft() && (bversion>=4.5)) || IsSafari() || IsChrome()) {
+//  console.log(IsSafari());
+//  console.log(IsChrome());
+//  console.log(IsNetscape());
+//  console.log(IsMicrosoft());
+//  if(IsNetscape() || (IsMicrosoft() && (bversion>=4.5)) || IsSafari() || IsChrome()) {
+	if(IsSafari() || IsChrome() || IsNetscape()) {
     // Write "start up" messages:
     WriteLogMsg('*start_loading');
     console.log('LabelMe: starting up...');
@@ -49,7 +54,7 @@ function StartupLabelMe() {
   else {
     // Invalid browser, so display error page.
     $('body').remove();
-    $('html').append('<body><p><img src="Icons/LabelMe.gif" /></p><br /><p>Sorry!  This page only works with Mozilla Firefox, Chrome, and Internet Explorer.  We may support other browsers in the future.</p><p><a href="http://www.mozilla.org">Download Mozilla Firefox?</a></p></body>');
+    $('html').append('<body><p><img src="Icons/LabelMe.gif" /></p><br /><p>Sorry!  This page only works with Mozilla Firefox, Chrome, and Safari.  We may support other browsers in the future.</p><p><a href="http://www.mozilla.org">Download Mozilla Firefox?</a></p></body>');
   }
 }
 

@@ -49,7 +49,7 @@ function InitializeScribbleMode(tag_button, tag_canvas){
               <img src="Icons/erase.png"  width="28" height="38" /> \
               </button> \
           </div>';
-
+/**
   html_str += '<div id= "segmDiv" class="annotatemenu">Mask<br></br>Tool \
              <button id="ScribbleObj" class="labelBtnDraw" type="button" title="Use the red pencil to mark areas inside the object you want to segment" onclick="scribble_canvas.setCurrentDraw(OBJECT_DRAWING)" > \
                 <img src="Icons/object.png" width="28" height="38" /></button> \
@@ -59,7 +59,7 @@ function InitializeScribbleMode(tag_button, tag_canvas){
                 <img src="Icons/erase.png" width="28" height="38" /> \
             </button><input type="button" class="segbut" id="segmentbtn" value="Process" title="Press this button to see the segmentation results." onclick="scribble_canvas.segmentImage(0)"/><input type="button" class="segbut"  id="donebtn" value="Done" title="Press this button after you are done with the scribbling." onclick="scribble_canvas.segmentImage(1)"/> \
             <p> </p><div id="loadspinner" style="display: none;"><img src="Icons/segment_loader.gif"/> </div></div>';
-
+**/
   $('#'+tag_button).append(html_str);    
 
   var html_str2 = '<button xmlns="http://www.w3.org/1999/xhtml" id="img_url" class="labelBtn" type="button" title="Download Pack" onclick="javascript:GetPackFile();"> \
@@ -71,11 +71,11 @@ function InitializeScribbleMode(tag_button, tag_canvas){
         <input type="hidden" id= "name" name="name" value="img2.jpg" /> \
        </form>';
 
-  $('#tool_buttons').append(html_str3);
-  $('#help').before(html_str2); 
-  document.getElementById("segmDiv").setAttribute('style', 'opacity: 1');
+  //$('#tool_buttons').append(html_str3);
+  //$('#help').before(html_str2); 
+  //document.getElementById("segmDiv").setAttribute('style', 'opacity: 1');
   document.getElementById("polygonDiv").setAttribute('style', 'opacity: 1');
-  document.getElementById("segmDiv").setAttribute('style', 'border-color: #000');
+  //document.getElementById("segmDiv").setAttribute('style', 'border-color: #000');
   document.getElementById("polygonDiv").setAttribute('style', 'border-color: #f00');
 }
 
@@ -353,8 +353,8 @@ function scribble_canvas(tag) {
   };
   
   this.GetPopupFormDraw = function() {
-    html_str = "<b>Enter object name</b><br />";
-    html_str += this.HTMLobjectBox("");
+    html_str = "<b>Select object name</b><br />";
+	 html_str += this.HTMLobjectBox("");
     
     if(use_attributes) {
       html_str += HTMLoccludedBox("");

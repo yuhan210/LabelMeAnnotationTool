@@ -17,7 +17,7 @@ var action_ModifyControlExistingObjects = 0;
 var action_DeleteExistingObjects = 0;
 
 // Which polygons are visible:
-var view_Existing = 1;
+var view_Existing = 0;
 var view_Deleted = 0;
 
 // Flag for right-hand object list:
@@ -30,7 +30,7 @@ var externalSubmitURL = 'http://mturk.com/mturk/externalSubmit';
 var externalSubmitURLsandbox = 'http://workersandbox.mturk.com/mturk/externalSubmit';
 var mt_N = 'inf';
 
-var object_choices = '...';
+var object_choices = ["Stop sign", "Do not enter", "Pedestrain Xing", "Yield", "No right/left turn", "One way", "Speed limit", "Right/Left curve", "Road direction", "Traffic light","Others"];
 
 // Access LabelMe object field.
 // i - object index
@@ -214,8 +214,13 @@ function SetObjectChoicesPointLine(num_control_points) {
     object_choices = object_choices.split(/,/);
     isLine = 1;
   }
-  
-  return (isPoint || isLine);
+ /** 
+  if (num_control_points > 2){
+		object_choices = 'stop sign,test';
+    	object_choices = object_choices.split(/,/);
+		isLine = 1;
+	}**/
+	return (isPoint || isLine);
 }
 
 // Returns true if the point (x,y) is close to polygon p.
