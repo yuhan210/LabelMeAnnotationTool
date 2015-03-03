@@ -1,8 +1,15 @@
+'''
+Author: Tiffany Chen
+Parse tag files, and plot tagged polygons on images
+Usage: process_xml.py collection 
+'''
+
 from BeautifulSoup import BeautifulSoup
 import numpy as np
 import cv2
 import sys
 import os
+from random import randint
 
 anno_folder = "/var/www/LabelMeAnnotationTool/Annotations/"
 img_folder = "/var/www/LabelMeAnnotationTool/Images/"
@@ -27,7 +34,7 @@ if __name__ == "__main__":
 			poly_pts = [[int(pt.x.contents[0]), int(pt.y.contents[0])]  for pt in obj.polygon.findAll('pt')] # for each point in the polygon
 			pts = np.array(poly_pts, np.int32)
 			pts = pts.reshape((-1, 1, 2))
-			cv2.polylines(im, [pts], True, (0,255,255), thickness=3)
+			cv2.polylines(im, [pts], True, (randint(0,255),randint(0,255),randint(0,255)), thickness=3)
 			
 	#print y.annotation.polygon.findAll('pt')
 
