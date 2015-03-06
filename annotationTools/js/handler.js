@@ -162,25 +162,25 @@ function handler() {
     this.SubmitQuery = function () {
       var nn;
       var anno;
-      
       // If the attributes are active, read the fields.
       if (use_attributes) {
-	// get attributes (is the field exists)
-	if(document.getElementById('attributes')) new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
-	else new_attributes = "";
+			// get attributes (is the field exists)
+			if(document.getElementById('attributes')) new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
+			else new_attributes = "";
 	
-	// get occlusion field (is the field exists)
-	if (document.getElementById('occluded')) new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
-	else new_occluded = "";
+			// get occlusion field (is the field exists)
+			if (document.getElementById('occluded')) new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
+			else new_occluded = "";
       }
-      
-      if((object_choices!='...') && (object_choices.length==1)) {
-	nn = RemoveSpecialChars(object_choices[0]);
-	active_canvas = REST_CANVAS;
+     
+      if((object_choices!='...') && (object_choices.length==1)) { //YC: not here!
+			nn = RemoveSpecialChars(object_choices[0]);
+			active_canvas = REST_CANVAS;
 	
 	// Move draw canvas to the back:
 	document.getElementById('draw_canvas').style.zIndex = -2;
 	document.getElementById('draw_canvas_div').style.zIndex = -2;
+	
 	
 	// Remove polygon from the draw canvas:
 	var anno = null;
@@ -190,15 +190,15 @@ function handler() {
 	  draw_anno = null;
 	}
       }
-      else {
-	nn = RemoveSpecialChars(document.getElementById('objEnter').value);
+      else { // YC: comes here
+	nn = RemoveSpecialChars(document.getElementById('objEnter').value); // YC: nn -> stop sign
 	anno = this.QueryToRest();
       }
       
       var re = /[a-zA-Z0-9]/;
-      if(!re.test(nn)) {
-	alert('Please enter an object name');
-	return;
+      if(!re.test(nn)) { // YC: should always pass this
+			alert('Please select an object name');
+			return;
       }
       
       // Update old and new object names for logfile:
@@ -217,15 +217,15 @@ function handler() {
       html_str += '<deleted>0</deleted>';
       html_str += '<verified>0</verified>';
       if(use_attributes) {
-	html_str += '<occluded>' + new_occluded + '</occluded>';
-	html_str += '<attributes>' + new_attributes + '</attributes>';
+			html_str += '<occluded>' + new_occluded + '</occluded>';
+			html_str += '<attributes>' + new_attributes + '</attributes>';
       }
       html_str += '<parts><hasparts></hasparts><ispartof></ispartof></parts>';
       var ts = GetTimeStamp();
       if(ts.length==20) html_str += '<date>' + ts + '</date>';
       html_str += '<id>' + anno.anno_id + '</id>';
       
-      if(anno.GetType() == 1) {
+      if(anno.GetType() == 1) { // YC: not here. This draws segmentation
 	/*************************************************************/
 	/*************************************************************/
 	// Scribble: Add annotation to LM_xml:
@@ -255,34 +255,34 @@ function handler() {
 	/*************************************************************/
 	/*************************************************************/
       }
-      else {
-	html_str += '<polygon>';
-	html_str += '<username>' + username + '</username>';
-	for(var jj=0; jj < anno.GetPtsX().length; jj++) {
-	  html_str += '<pt>';
-	  html_str += '<x>' + anno.GetPtsX()[jj] + '</x>';
-	  html_str += '<y>' + anno.GetPtsY()[jj] + '</y>';
-	  html_str += '</pt>';
-	}
-	html_str += '</polygon>';
-	html_str += '</object>';
-	$(LM_xml).children("annotation").append($(html_str));
-      }
+   else { // YC: user draws polygon
+		html_str += '<polygon>';
+		html_str += '<username>' + username + '</username>';
+		for(var jj=0; jj < anno.GetPtsX().length; jj++) {
+	  		html_str += '<pt>';
+	 		html_str += '<x>' + anno.GetPtsX()[jj] + '</x>';
+	  		html_str += '<y>' + anno.GetPtsY()[jj] + '</y>';
+	 		html_str += '</pt>';
+		}
+		html_str += '</polygon>';
+		html_str += '</object>';
+		$(LM_xml).children("annotation").append($(html_str));
+    }
       
-      AllAnnotations.push(anno);
+     AllAnnotations.push(anno);
       
       if(!anno.GetDeleted()||view_Deleted) {
-	main_canvas.AttachAnnotation(anno);
-	anno.RenderAnnotation('rest');
+			main_canvas.AttachAnnotation(anno);
+			anno.RenderAnnotation('rest');
       }
       
       /*************************************************************/
       /*************************************************************/
       // Scribble: Clean scribbles.
       if(anno.GetType() == 1) {
-	scribble_canvas.cleanscribbles();
-	scribble_canvas.scribble_image = "";
-	scribble_canvas.colorseg = Math.floor(Math.random()*14);
+			scribble_canvas.cleanscribbles();
+			scribble_canvas.scribble_image = "";
+			scribble_canvas.colorseg = Math.floor(Math.random()*14);
       }
       /*************************************************************/
       /*************************************************************/
@@ -294,11 +294,11 @@ function handler() {
       
       var m = main_media.GetFileInfo().GetMode();
       if(m=='mt') {
-	document.getElementById('object_name').value=new_name;
-	document.getElementById('number_objects').value=global_count;
-	document.getElementById('LMurl').value = LMbaseurl + '?collection=LabelMe&mode=i&folder=' + main_media.GetFileInfo().GetDirName() + '&image=' + main_media.GetFileInfo().GetImName();
-	if(global_count >= mt_N) document.getElementById('mt_submit').disabled=false;
-      }
+			document.getElementById('object_name').value=new_name;
+			document.getElementById('number_objects').value=global_count;
+			document.getElementById('LMurl').value = LMbaseurl + '?collection=LabelMe&mode=i&folder=' + main_media.GetFileInfo().GetDirName() + '&image=' + main_media.GetFileInfo().GetImName();
+			if(global_count >= mt_N) document.getElementById('mt_submit').disabled=false;
+       }
     };
     
     // Handles when we wish to change from "query" to "rest".

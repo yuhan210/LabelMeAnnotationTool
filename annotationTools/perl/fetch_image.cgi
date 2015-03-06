@@ -20,8 +20,8 @@ if($mode eq "i") {
     my $fname = $LM_HOME . "annotationCache/DirLists/$collection.txt";
     
     if(!open(FP,$fname)) {
-	print "Status: 404\n\n";
-	return;
+		print "Status: 404\n\n";
+		return;
     }
     
     open(NUMLINES,"wc -l $fname |");
@@ -32,7 +32,7 @@ if($mode eq "i") {
     my $line = int(rand($numlines))+1;
     
     for(my $i=1; $i < $line; $i++) {
-	my $garbage = readline(FP);
+		my $garbage = readline(FP);
     }
     
     my $fileinfo = readline(FP);
@@ -48,14 +48,15 @@ elsif($mode eq "c") {
 
     my $c = 0;
     foreach my $i (@all_images) {
-	if($i eq $image) {
-	    goto next_section;
-	}
-	$c = $c+1;
+		if($i eq $image) {
+			goto next_section;
+		}
+		$c = $c+1;
     }
-  next_section:
-    if($c == scalar(@all_images)-1) {
-	$c = 1;
+  	 next_section:
+   
+	 if($c == scalar(@all_images)-1) {
+		$c = 1;
     }
     $im_file = $all_images[$c+1];
     $im_dir = $folder;
@@ -68,26 +69,26 @@ elsif($mode eq "f") {
     my $do_rand = 1;
     my $i = 0;
     if($image =~ m/\.jpg$/) {
-	$do_rand = 0;
+	 	$do_rand = 0;
 
 	# Get location of image in array:
 	for(my $j = 0; $j < scalar(@all_images); $j++) {
 	    if($all_images[$j] =~ m/$image/) {
-		$i = $j;
-		last;
+			$i = $j;
+			last;
 	    }
-	}
+		}
     }
 
     do {
-	if($do_rand) {
-	    $i = int(rand(scalar(@all_images)));
-	}
-	else {
-	    $i = ($i + 1) % scalar(@all_images);
-	}
-	$im_dir = $folder;
-	$im_file = $all_images[$i];
+		if($do_rand) {
+	   	 $i = int(rand(scalar(@all_images)));
+		}
+		else {
+	    	$i = ($i + 1) % scalar(@all_images);
+		}
+		$im_dir = $folder;
+		$im_file = $all_images[$i];
     }
     while(!($im_file =~ m/\.jpg$/))
 

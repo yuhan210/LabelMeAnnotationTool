@@ -24,12 +24,18 @@ var view_Deleted = 0;
 var view_ObjList = true;
 
 // MT variables:
+var LMbaseurl = 'https://' + window.location.host + window.location.pathname;
+var MThelpPage = 'annotationTools/html/mt_instructions.html';
+var externalSubmitURL = 'https://www.mturk.com/mturk/externalSubmit';
+var externalSubmitURLsandbox = 'https://www.workersandbox.mturk.com/mturk/externalSubmit';
+var mt_N = 'inf';
+/**
 var LMbaseurl = 'http://' + window.location.host + window.location.pathname;
 var MThelpPage = 'annotationTools/html/mt_instructions.html';
 var externalSubmitURL = 'http://mturk.com/mturk/externalSubmit';
 var externalSubmitURLsandbox = 'http://workersandbox.mturk.com/mturk/externalSubmit';
 var mt_N = 'inf';
-
+**/
 var object_choices = ["Stop sign", "Do not enter", "Pedestrain Xing", "Yield", "No right/left turn", "One way", "Speed limit", "Right/Left curve", "Road direction", "Traffic light","Others"];
 
 // Access LabelMe object field.

@@ -6,10 +6,6 @@ function StartupLabelMe() {
 
   // Check browser:
   GetBrowserInfo();
-//  console.log(IsSafari());
-//  console.log(IsChrome());
-//  console.log(IsNetscape());
-//  console.log(IsMicrosoft());
 //  if(IsNetscape() || (IsMicrosoft() && (bversion>=4.5)) || IsSafari() || IsChrome()) {
 	if(IsSafari() || IsChrome() || IsNetscape()) {
     // Write "start up" messages:
