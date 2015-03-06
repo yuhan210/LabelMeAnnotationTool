@@ -67,6 +67,9 @@ function file_info() {
                     isMT = true;
                 }
                 if(par_field=='assignmentId') {
+						  console.log('assignmentId');
+						  console.log(par_value);
+				
                     this.assignmentId = par_value;
                     isMT = true;
                 }
@@ -164,8 +167,12 @@ function file_info() {
             else if((this.mode=='im') || (this.mode=='mt')) {
                 var p = document.getElementById('header');
                 p.parentNode.removeChild(p);
-                var p = document.getElementById('tool_buttons');
+             	 var p = document.getElementById('label_buttons_navigation');
                 p.parentNode.removeChild(p);
+					 
+  					 // YC
+					 //var p = document.getElementById('tool_buttons');
+                //p.parentNode.removeChild(p);
                 document.getElementById('body').style.visibility = 'visible';
             }
             else {
@@ -177,7 +184,7 @@ function file_info() {
                 var p = document.getElementById('anno_anchor');
                 p.parentNode.removeChild(p);
             }
-            
+           
             if(this.assignmentId=='ASSIGNMENT_ID_NOT_AVAILABLE') {
                 window.location = MThelpPage;
                 return false;
