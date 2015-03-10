@@ -12,23 +12,44 @@ import matplotlib.pyplot as plt
 
 anno_folder = "/var/www/LabelMeAnnotationTool/Annotations/"
 img_folder = "/var/www/LabelMeAnnotationTool/Images/"
-SIZE_THRESH = 5000
+SIZE_THRESH = 4500
 
-def getObjects(xml_path):
+
+def mergeRects(rects):
+	unionmap = range(len(rects))
+	for rect in rects:	
+		if overlapPercent()			
+	return rects
+
+def getRects(xml_path):
 	xml = BeautifulSoup(open(xml_path).read())
-	objs = []
+	rects = []
 	for obj in  xml.annotation.findAll('object'): # for each object labeled
 
-		names = [name.contents[0] for name in obj.findAll('name')]
-		assert(len(names) == 1)
-		obj_name =  names[0]
 			
 		poly_pts = [[int(pt.x.contents[0]), int(pt.y.contents[0])]  for pt in obj.polygon.findAll('pt')] # for each point in the polygon
 		pts = np.array(poly_pts, np.int32)
 		pts = pts.reshape((-1 , 1, 2))
-		objs += [pts]
+		if obj.deleted.string.find('0') >= 0:
+			rect = cv2.boundingRect(pts)	# (x,y,w,h)
+			rects += [rect]
 
-	return objs
+	return rects
+
+def overlapPercent(rect_a, rect_b):
+	a_x1 = rect_a[0]
+	a_y1 = rect_a[1]
+	a_x2 = rect_a[0] + rect_a[2]
+	a_y2 = rect_a[1] + rect_a[3]
+	
+	b_x1 = rect_b[0]
+	b_y1 = rect_b[1]
+	b_x2 = rect_b[0] + rect_b[2]
+	b_y2 = rect_b[1] + rect_b[3]
+	si = max(0, max(a_x1, b_x1) - min(b_x2,a_x2)) * max(0, max(a_y1, b_y1) - min(a_y2, b_y2))
+	area_a = rect_a[2] * rect_a[3]
+	area_b = rect_b[2] * rect_b[3]
+	return (area_a + area_b)/((area_a +area_b - si) * 1.0)
 
 def isIntersect(rect_a, rect_b):# (x,y, w,h)
 	a_x1 = rect_a[0]
@@ -44,10 +65,9 @@ def isIntersect(rect_a, rect_b):# (x,y, w,h)
 	noOverlap = a_x1 > b_x2 or b_x1 > a_x2 or a_y1 > b_y2 or b_y1 > a_y2
 	return not noOverlap
 
-def hasObj(obj_key, objs): # true if obj_key is in objs
-	rect_key = cv2.boundingRect(obj_key)
-	for obj in objs:
-		rect = cv2.boundingRect(obj)
+
+def hasObj(rect_key, rects): # true if obj_key is in objs
+	for rect_key in rects:
 		if isIntersect(rect, rect_key):
 			return True
 
@@ -65,68 +85,81 @@ if __name__ == "__main__":
 	collection = sys.argv[1]
 	files = os.listdir(os.path.join(anno_folder, collection))
 	files.sort(key=lambda f: f.split('.xml')[0])
+	# sorted file paths
 	files = [os.path.join(anno_folder, collection, f) for f in files]
-		
+			
 	## load all xml files into memory (path: xml)
 	file_idx = []
 	xmls = {}
 	file_dicts = {}
 	for f in files:
+		# key -> xml string 
 		xmls[getFileKeyFromPath(f)] = BeautifulSoup(open(f).read())
+		# list of keys
 		file_idx += [getFileKeyFromPath(f)]
+		# key to file path
 		file_dicts[getFileKeyFromPath(f)] = f
 
-	# First pass: remove labels with wrong sizes
+	print "First pass: remove labels with wrong sizes.."
 	areas = []
 	for t in files:
 		tag_path = t
-		im_path = os.path.join(img_folder, collection, (t.split('.')[-2].split('/')[-1] + '.jpg'))
 
 		xml = xmls[getFileKeyFromPath(t)]
 		for obj in xml.annotation.findAll('object'): # for each object labeled
 
-			names = [name.contents[0] for name in obj.findAll('name')]
-			assert(len(names) == 1)
-			obj_name =  names[0]
-			
 			poly_pts = [[int(pt.x.contents[0]), int(pt.y.contents[0])]  for pt in obj.polygon.findAll('pt')] # for each point in the polygon
 			pts = np.array(poly_pts, np.int32)
 			pts = pts.reshape((-1 , 1, 2))
 			area = cv2.contourArea(pts)
+			if area > SIZE_THRESH or area < 10:
+				obj.deleted.string = unicode(1)
 			
-			if area > SIZE_THRESH:
-				obj.find('deleted').replaceWith('<deleted>1</deleted>')
-
-		
-	# Second pass: look at previous/next labels
-	'''
+	print "Second pass: look at previous/next labels"
 	for i in xrange(1, len(file_idx)-1):	
-		ind = file_idx[i]			
+		ind = file_idx[i]		# key	
 			
-		objs = getObjects(file_dicts[ind])
 		# for each object in xml[idx]
-		for obj in objs:
+		xml = xmls[ind]
+		for obj in xml.annotation.findAll('object'):
+			poly_pts = [[int(pt.x.contents[0]), int(pt.y.contents[0])]  for pt in obj.polygon.findAll('pt')] # for each point in the polygon
+			pts = np.array(poly_pts, np.int32)
+			pts = pts.reshape((-1 , 1, 2))
+			rect = cv2.boundingRect(pts)	# (x,y,w,h)
+			
 			deleted = True
 			# check if it's in the prev or nxt frame, keep it if yes
 			if file_dicts.has_key(ind - 1):
-				if (hasObj(obj, getObjects(file_dicts[ind-1]))):
+				if (hasObj(rect, getRects(file_dicts[ind-1]))):
 					deleted = False
 			if file_dicts.has_key(ind + 1):
-				if (hasObj(obj, getObjects(file_dicts[ind + 1]))):
+				if (hasObj(rect, getRects(file_dicts[ind + 1]))):
 					deleted = False
 			
 			if deleted:
-					if xmls[ind].find('deleted') >= 0:
-						xmls[ind].find('deleted').replaceWith('<deleted>1</deleted>')
-					else:
-						print xmls[ind]
-	'''
+					obj.deleted.string = unicode(1)
 	
+	print "Third pass: combining rects within each frame"
+	for f in files:
+
+		xml = xmls[getFileKeyFromPath(f)]
+		rects = []		
+		for obj in xml.annotation.findAll('object'): # for each object labeled
+
+			poly_pts = [[int(pt.x.contents[0]), int(pt.y.contents[0])]  for pt in obj.polygon.findAll('pt')] # for each point in the polygon
+			pts = np.array(poly_pts, np.int32)
+			pts = pts.reshape((-1 , 1, 2))
+			rects += [cv2.boundingRect(pts)]
+				
+		sub_rects = mergeRects(rects)	
+		
+	# Forth pass: smoothing	
+	
+		
 	for t in files:
-		fh_out = open('/var/www/LabelMeAnnotationTool/Annotations/biking_1_test/' + t.split('/')[-1], 'w')	
+		fh_out = open('/var/www/LabelMeAnnotationTool/tmp/biking_1/' + t.split('/')[-1], 'w')	
 		fh_out.write(xmls[getFileKeyFromPath(t)].prettify()+'\n')		
 		fh_out.close()
 
-	# Third pass: smoothing	
 
 	
