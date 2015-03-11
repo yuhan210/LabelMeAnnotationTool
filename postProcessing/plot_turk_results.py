@@ -6,7 +6,7 @@ import os
 from random import randint
 import time
 
-anno_folder = "/var/www/LabelMeAnnotationTool/tmp/"
+anno_folder = "/var/www/LabelMeAnnotationTool/processedAnnotation/"
 img_folder = "/var/www/LabelMeAnnotationTool/Images/"
 
 if __name__ == "__main__":
@@ -19,8 +19,7 @@ if __name__ == "__main__":
 	collection = sys.argv[1]
 	outpath = sys.argv[2]
 	files = [os.path.join(anno_folder, collection, f) for f in os.listdir(os.path.join(anno_folder, collection))]
-	files.sort(key=lambda x:os.path.getmtime(x), reverse=True)
-	
+	files.sort(key=lambda x: int(x.split('.')[-2].split('/')[-1]))
 	for t in files:
 		tag_path = t
 		im_path = os.path.join(img_folder, collection, (t.split('.')[-2].split('/')[-1] + '.jpg'))
@@ -36,10 +35,15 @@ if __name__ == "__main__":
 			poly_pts = [[int(pt.x.contents[0]), int(pt.y.contents[0])]  for pt in obj.polygon.findAll('pt')] # for each point in the polygon
 			pts = np.array(poly_pts, np.int32)
 			pts = pts.reshape((-1, 1, 2))
+			#cv2.polylines(im, [pts], True, (randint(0,255),randint(0,255),randint(0,255)), thickness=3)
 			x,y,w,h = cv2.boundingRect(pts)
 			if obj.deleted.string.find('0') >= 0:
 				cv2.rectangle(im, (x,y), (x+w, y+h), (randint(0,255),randint(0,255),randint(0,255)), thickness=3)
-				count += 1
-			cv2.imwrite(os.path.join(outpath, (t.split('.')[-2].split('/')[-1] + '.jpg')), im)
+				
+			count += 1
+			#cv2.imwrite(os.path.join(outpath, (t.split('.')[-2].split('/')[-1] + '.jpg')), im)
+		cv2.imshow(t.split('.')[-2].split('/')[-1], im)
+		cv2.waitKey(500)
+		cv2.destroyWindow(t.split('.')[-2].split('/')[-1])
 	print count
 
